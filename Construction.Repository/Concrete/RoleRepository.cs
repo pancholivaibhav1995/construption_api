@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Construction.Models.APIModels.response;
 
 namespace Construction.Repository.Concrete
 {
@@ -37,6 +38,12 @@ namespace Construction.Repository.Concrete
         public async Task<List<Role>> GetAllAsync(Guid organisationId)
         {
             return await _context.Roles.Where(a => a.Organisationid == organisationId).ToListAsync();
+        }
+
+        public async Task<List<UserManagerResponseModel>> GetUsersByRoleAndOrganisationAsync(Guid roleId, Guid organisationId)
+        {
+            // This method is required by the interface but should be implemented in UserRepository, not here.
+            throw new NotImplementedException();
         }
         // Implement any specific methods for RoleRepository here, if needed
         // For example, you might want to add methods to find roles by name or other criteria

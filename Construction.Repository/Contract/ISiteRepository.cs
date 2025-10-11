@@ -9,6 +9,6 @@ namespace Construction.Repository.Contract
 {
     public  interface ISiteRepository : IGenericRepository<Site>
     {
-       // public List<Site> GetSiteWithManager();
+        List<Site> GetSiteWithManagerByOrganisationId(Guid organisationId);
     }
 }

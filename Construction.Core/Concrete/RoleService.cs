@@ -14,10 +14,12 @@ namespace Construction.Core.Concrete
     public class RoleService : IRoleService
     {
         private readonly IRoleRepository _roleRepository;
+        private readonly IUserRepository _userRepository;
 
-        public RoleService(IRoleRepository roleRepository)
+        public RoleService(IRoleRepository roleRepository, IUserRepository userRepository)
         {
             _roleRepository = roleRepository;
+            _userRepository = userRepository;
         }
 
         public Task AddAsync(Role role)
@@ -54,6 +56,11 @@ namespace Construction.Core.Concrete
                 Rolename = role.Rolename,
                 Organisationid = role.Organisationid
             }).ToList();
+        }
+
+        public async Task<List<UserManagerResponseModel>> GetAllUsersByOrganisationAsync(Guid organisationId)
+        {
+            return await _userRepository.GetAllUsersByOrganisationAsync(organisationId);
         }
     }
 }

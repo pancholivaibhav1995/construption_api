@@ -82,6 +82,8 @@ public partial class constructiondbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(150)
                 .HasColumnName("sitename");
+            entity.Property(e => e.Userid)
+                .HasColumnName("userid");
         });
 
         modelBuilder.Entity<User>(entity =>

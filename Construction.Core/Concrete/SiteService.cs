@@ -26,71 +26,81 @@ namespace Construction.Core.Concrete
             _mapper = mapper;
         }
 
-        //public async Task<SiteResponseModel> AddSiteAsync(SiteRequestModel request)
-        //{
-        //    var site = _mapper.Map<Site>(request);
-        //    await _siteRepository.AddAsync(site);
-        //    var result = await _siteRepository.CommitAsync();
-        //    var response = _mapper.Map<SiteResponseModel>(site);
-        //    if (result <= 0)
-        //    {
-        //        response.Success = false;
-        //    }
-        //    else
-        //    {
-        //        response.Success = true;
-        //    }
-        //    return response;
-        //}
+        public async Task<SiteResponseModel> AddSiteAsync(SiteRequestModel request)
+        {
+            try
+            {
+                var site = _mapper.Map<Site>(request);
+                site.Siteid = Guid.NewGuid();
+                site.Isactive = false;
+                await _siteRepository.AddAsync(site);
+                var result = await _siteRepository.CommitAsync();
+                var response = _mapper.Map<SiteResponseModel>(site);
+                if (result <= 0)
+                {
+                    response.Success = false;
+                }
+                else
+                {
+                    response.Success = true;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (ex) as needed
+                throw; // Re-throw the exception after logging it
+            }
+        }
 
-        //public async Task<SiteResponseModel> GetSiteByIdAsync(int id)
-        //{
-        //    var site = await _siteRepository.GetAsyncById(id);
-        //    if (site != null)
-        //    {
-        //        var response = _mapper.Map<SiteResponseModel>(site);
-        //        response.Success = true;
-        //        return response;
-        //    }
-        //    else
-        //    {
-        //        return new SiteResponseModel
-        //        {
-        //            Success = false,
-        //            Message = "Site not found"
-        //        };
-        //     }
-        //}
-        //public async Task<SiteResponseModel> UpdateSiteAsync(int id, SiteRequestModel request)
-        //{
-        //    var site = await _siteRepository.GetAsyncById(id);
-        //    if (site == null)
-        //        return null;
+        public async Task<SiteResponseModel> GetSiteByIdAsync(Guid id)
+        {
+            var site = await _siteRepository.GetAsyncById(id);
+            if (site != null)
+            {
+                var response = _mapper.Map<SiteResponseModel>(site);
+                response.Success = true;
+                return response;
+            }
+            else
+            {
+                return new SiteResponseModel
+                {
+                    Success = false,
+                    Message = "Site not found"
+                };
+            }
+        }
+        public async Task<SiteResponseModel> UpdateSiteAsync(Guid id, SiteRequestModel request)
+        {
+            var site = await _siteRepository.GetAsyncById(id);
+            if (site == null)
+                return null;
 
-        //    site.Sitename = request.Sitename;
-        //    site.Location = request.Location;
-        //    site.Userid = request.Userid;
-        //    site.IsActive = request.Isactive;
+            site.Sitename = request.Sitename;
+            site.Location = request.Location;
+            //site.Userid = request.Userid;
+            site.Isactive = request.IsActive;
 
-        //    var result = await _siteRepository.CommitAsync();
-        //    var response = _mapper.Map<SiteResponseModel>(site);
-        //    if (result <= 0)
-        //    {
-        //        response.Success = false;
-        //        return response;
-        //    }
-        //    else
-        //    {
-        //        response.Success = true;
-        //        return response;
-        //    }
-        //}
-        //public  List<SiteResponseModel> GetAllSitesAsync()
-        //{
-        //    var sites = _siteRepository.GetSiteWithManager();
-        //    var response = _mapper.Map<List<SiteResponseModel>>(sites);
-        //    return response;
-        //}
+            var result = await _siteRepository.CommitAsync();
+            var response = _mapper.Map<SiteResponseModel>(site);
+            if (result <= 0)
+            {
+                response.Success = false;
+                return response;
+            }
+            else
+            {
+                response.Success = true;
+                return response;
+            }
+        }
 
+        public List<SiteResponseModel> GetAllSitesByOrganisationId(Guid organisationId)
+        {
+            var sites = _siteRepository.GetSiteWithManagerByOrganisationId(organisationId);
+            var response = _mapper.Map<List<SiteResponseModel>>(sites);
+            return response;
+        }
     }
 }

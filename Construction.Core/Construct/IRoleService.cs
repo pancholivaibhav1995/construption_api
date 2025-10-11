@@ -14,5 +14,6 @@ namespace Construction.Core.Construct
         //Task<List<RoleResponseModel>> GetAllRolesAsync();
         Task<ServiceResult<Role>> AddRoleAsync(RoleRequestModel request);
         Task<List<RoleResponseModel>> GetAllRolesAsync(Guid organisationId);
+        Task<List<UserManagerResponseModel>> GetAllUsersByOrganisationAsync(Guid organisationId);
     }
 }

@@ -42,13 +42,13 @@ namespace Construction.Core.Concrete
 
         //public Task<List<UserManagerResponseModel>> FetchUserManager(int roleIds)
         //{
-        //    var result = _userRepository.Getuserwithuserrole()
+        //    var result = _userRepository.GetAll()
         //        .Where(x => x.Userroles.Any(y => y.Roleid == roleIds || y.Roleid == 1) && x.Isactive == true)
         //        .Select(x => new UserManagerResponseModel
         //        {
         //            Firstname = x.Firstname,
         //            Lastname = x.Lastname,
-        //            Userid = x.Userid,
+        //            Userid = x.Userid.GetHashCode(), // Userid is Guid, but UserManagerResponseModel expects int
         //            Roleid = roleIds
         //        })
         //        .ToList();

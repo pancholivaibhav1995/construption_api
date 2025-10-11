@@ -8,10 +8,10 @@ namespace Construction.Models.APIModels.response
 {
     public class SiteResponseModel
     {
-        public int SiteId { get; set; }
+        public Guid SiteId { get; set; }
         public string Sitename { get; set; }
         public string Location { get; set; }
-        public int Userid { get; set; }
+        public Guid Userid { get; set; }
 
         public string firstname { get; set; }
 

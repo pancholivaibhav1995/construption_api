@@ -32,14 +32,18 @@ namespace Construction.api.Controllers
         public async Task<IActionResult> AddEmployeeAsync([FromBody] EmployeeRequestModel request)
         {
             var result = await _employeeService.AddEmployeeAsync(request);
-            return Ok(result);
+            if (result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
 
-        [HttpPut("edit")]
-        public async Task<IActionResult> EditEmployeeAsync([FromBody] EmployeeRequestModel request)
+        [HttpPut("edit/{id}")]
+        public async Task<IActionResult> EditEmployeeAsync(Guid id,[FromBody] EmployeeRequestModel request)
         {
-            var result = await _employeeService.EditEmployeeAsync(request);
-            return Ok(result);
+            var result = await _employeeService.EditEmployeeAsync(id,request);
+            if (result != null && result.Success)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpGet("all")]

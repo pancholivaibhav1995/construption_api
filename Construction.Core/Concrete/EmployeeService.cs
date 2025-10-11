@@ -44,7 +44,7 @@ namespace Construction.Core.Concrete
                 user.Contactnumber = request.Contact;
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 user.OrganisationId = request.organisationId;
-
+                user.CreatedDate = DateTime.UtcNow;
                 await _userRepository.AddAsync(user);
 
                 // 4. Link User to Role
@@ -66,9 +66,9 @@ namespace Construction.Core.Concrete
             }
         }
 
-        public async Task<ServiceResult<User>> EditEmployeeAsync(EmployeeRequestModel request)
+        public async Task<ServiceResult<User>> EditEmployeeAsync(Guid id,EmployeeRequestModel request)
         {
-            var user = await _userRepository.GetAsyncById(request.UserId);
+            var user = await _userRepository.GetAsyncById(id);
             if (user == null)
                 return ServiceResult<User>.Fail("User Not Found. " );
 
@@ -88,13 +88,10 @@ namespace Construction.Core.Concrete
             // Update role if needed
             if (request.RoleId != Guid.Empty)
             {
-                var existingUserRole = _userRoleRepository.GetByUserIdAsync(request.UserId);
+                var existingUserRole = await _userRoleRepository.GetByUserIdAsync(id);
                 if (existingUserRole == null)
                     return ServiceResult<User>.Fail("UserRole Not Found. ");
-                if (existingUserRole != null)
-                {
-                    existingUserRole.Result.Roleid = request.RoleId;
-                }
+                existingUserRole.Roleid = request.RoleId;
             }
             user.UpdatedDate = DateTime.UtcNow;
 

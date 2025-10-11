@@ -10,7 +10,8 @@ namespace Construction.Models.APIModels.request
     {
         public string Sitename { get; set; }
         public string Location { get; set; }
-        public int Userid { get; set; }
-        public bool Isactive { get; set; }
+        public Guid Userid { get; set; }
+        public bool IsActive { get; set; }
+        public Guid OrganisationId { get; set; }
     }
 }

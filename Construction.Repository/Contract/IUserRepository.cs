@@ -12,5 +12,6 @@ namespace Construction.Repository.Contract
     {
         Task<List<UserWithRoleResponseModel>> GetUserWithRolesByIdAsync(Guid organisationId);
         Task<bool> ExistsByEmailAsync(string email);
+        Task<List<UserManagerResponseModel>> GetAllUsersByOrganisationAsync(Guid organisationId);
     }
 }

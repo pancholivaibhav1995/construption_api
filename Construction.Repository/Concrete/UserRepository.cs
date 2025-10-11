@@ -48,5 +48,20 @@ namespace Construction.Repository.Concrete
 
             return result;
         }
+        public async Task<List<UserManagerResponseModel>> GetAllUsersByOrganisationAsync(Guid organisationId)
+        {
+            var result = await (
+                from user in _dbContext.Users
+                join userrole in _dbContext.Userroles on user.Userid equals userrole.UserId
+                where user.OrganisationId == organisationId && user.Isactive == true
+                select new UserManagerResponseModel
+                {
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname,
+                    Userid = user.Userid,
+                    Roleid = userrole.Roleid
+                }).ToListAsync();
+            return result;
+        }
     }
 }

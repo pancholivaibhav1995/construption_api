@@ -49,5 +49,23 @@ namespace Construction.api.Controllers
                 return StatusCode(500, new { message = "Failed to fetch roles.", error = ex.Message });
             }
         }
+
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsersForOrganisation()
+        {
+            try
+            {
+                var orgIdClaim = User.FindFirst("OrganisationId")?.Value;
+                if (string.IsNullOrEmpty(orgIdClaim) || !Guid.TryParse(orgIdClaim, out var organisationId))
+                    return Unauthorized(new { message = "OrganisationId claim missing or invalid in token." });
+
+                var users = await _roleService.GetAllUsersByOrganisationAsync(organisationId);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Failed to fetch users.", error = ex.Message });
+            }
+        }
     }
 }

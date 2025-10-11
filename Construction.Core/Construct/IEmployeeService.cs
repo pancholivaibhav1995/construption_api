@@ -12,7 +12,7 @@ namespace Construction.Core.Construct
     public interface IEmployeeService
     {
         Task<ServiceResult<User>> AddEmployeeAsync(EmployeeRequestModel request);
-        Task<ServiceResult<User>> EditEmployeeAsync(EmployeeRequestModel request);
+        Task<ServiceResult<User>> EditEmployeeAsync(Guid id,EmployeeRequestModel request);
         Task<List<UserWithRoleResponseModel>> GetAllEmployeesAsync(Guid OrganisationId);
         Task<UserReposneModel> UpdateUserIsActiveAsync(Guid id, bool isActive);
     }

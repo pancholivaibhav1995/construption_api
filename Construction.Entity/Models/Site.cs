@@ -16,4 +16,6 @@ public partial class Site
     public bool Isactive { get; set; }
 
     public Guid Organisationid { get; set; }
+
+    public Guid? Userid { get; set; }
 }

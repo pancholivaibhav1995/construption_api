@@ -21,5 +21,12 @@ namespace Construction.Repository.Concrete
         //        .Include(s => s.User)
         //        .ToList();
         //}
+
+        public List<Site> GetSiteWithManagerByOrganisationId(Guid organisationId)
+        {
+            return _dbContext.Sites
+                .Where(s => s.Organisationid == organisationId)
+                .ToList();
+        }
     }
 }

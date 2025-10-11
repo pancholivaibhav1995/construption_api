@@ -1,4 +1,5 @@
 ﻿using Construction.Entity.Models;
+using Construction.Models.APIModels.response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Construction.Repository.Contract
         Task<bool> ExistsByNameAsync(string roleName, Guid organisationId);
         Task CommitAsync();
         Task<List<Role>> GetAllAsync(Guid organisationId);
+        Task<List<UserManagerResponseModel>> GetUsersByRoleAndOrganisationAsync(Guid roleId, Guid organisationId);
     }
 }

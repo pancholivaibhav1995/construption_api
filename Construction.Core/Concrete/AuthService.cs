@@ -40,11 +40,13 @@ namespace Construction.Core.Concrete
                 var userrole = await _userRoleRepository.GetByUserIdAsync(user.Userid);
                 var role = await _roleRepository.GetAsyncById(userrole.Roleid);
                 var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, user.Firstname +' '+ user.Lastname),
-                new Claim(ClaimTypes.Role, role.Rolename),
-                new Claim(ClaimTypes.Email , user.Email),
-            };
+                {
+                    new Claim(ClaimTypes.Name, user.Firstname + ' ' + user.Lastname),
+                    new Claim(ClaimTypes.Role, role.Rolename),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("UserId", user.Userid.ToString()),
+                    new Claim("OrganisationId", user.OrganisationId.ToString()),
+                };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this_is_a_very_secure_32char_key!"));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                 var token = new JwtSecurityToken(
