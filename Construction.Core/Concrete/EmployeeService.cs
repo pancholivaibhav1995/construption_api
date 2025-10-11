@@ -73,7 +73,7 @@ namespace Construction.Core.Concrete
                 return ServiceResult<User>.Fail("User Not Found. " );
 
             user.Firstname = request.Firstname;
-            user.Lastname = request.Lastname;
+            user.Lastname = request.LastName;
             user.City = request.City;
             user.Email = request.Email;
             user.Isactive = request.Isactive;

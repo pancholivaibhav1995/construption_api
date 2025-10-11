@@ -79,7 +79,7 @@ namespace Construction.Core.Concrete
 
             site.Sitename = request.Sitename;
             site.Location = request.Location;
-            //site.Userid = request.Userid;
+            site.Userid = request.Userid;
             site.Isactive = request.IsActive;
 
             var result = await _siteRepository.CommitAsync();
@@ -98,9 +98,9 @@ namespace Construction.Core.Concrete
 
         public List<SiteResponseModel> GetAllSitesByOrganisationId(Guid organisationId)
         {
-            var sites = _siteRepository.GetSiteWithManagerByOrganisationId(organisationId);
-            var response = _mapper.Map<List<SiteResponseModel>>(sites);
-            return response;
+            var sites = _siteRepository.GetAllSiteByOrganisationId(organisationId);
+            //var response = _mapper.Map<List<SiteResponseModel>>(sites);
+            return sites.Result;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Construction.Entity.Models;
+using Construction.Models.APIModels.response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Construction.Repository.Contract
 {
     public  interface ISiteRepository : IGenericRepository<Site>
     {
-        List<Site> GetSiteWithManagerByOrganisationId(Guid organisationId);
+        Task<List<SiteResponseModel>> GetAllSiteByOrganisationId(Guid organisationId);
     }
 }

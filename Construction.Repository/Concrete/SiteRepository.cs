@@ -1,4 +1,5 @@
 ﻿using Construction.Entity.Models;
+using Construction.Models.APIModels.response;
 using Construction.Repository.Contract;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,11 +23,23 @@ namespace Construction.Repository.Concrete
         //        .ToList();
         //}
 
-        public List<Site> GetSiteWithManagerByOrganisationId(Guid organisationId)
+        public async Task<List<SiteResponseModel>> GetAllSiteByOrganisationId(Guid organisationId)
         {
-            return _dbContext.Sites
-                .Where(s => s.Organisationid == organisationId)
-                .ToList();
+            var result = (from site in _dbContext.Sites
+                          join user in _dbContext.Users on site.Userid equals user.Userid into userJoin
+                          from user in userJoin.DefaultIfEmpty()
+                          where site.Organisationid == organisationId
+                          select new SiteResponseModel
+                          {
+                              SiteId = site.Siteid,
+                              Sitename = site.Sitename,
+                              Location = site.Location,
+                              Isactive = site.Isactive,
+                              Userid = site.Userid ?? Guid.Empty,
+                              firstname = user.Firstname,
+                              lastname = user.Lastname
+                          }).ToList();
+            return result;
         }
     }
 }
