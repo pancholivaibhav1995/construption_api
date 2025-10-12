@@ -17,7 +17,7 @@ namespace Construction.api.Controllers
         }
 
         // GET api/supplier/getAll/5
-        [HttpGet("getAll")]
+        [HttpGet("getAllSupplier")]
         public async Task<IActionResult> GetAll()
         {
             var orgIdClaim = User.FindFirst("OrganisationId")?.Value;
