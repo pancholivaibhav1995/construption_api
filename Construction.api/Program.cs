@@ -65,6 +65,8 @@ namespace Construction.api
             builder.Services.AddTransient<IDashboardRepository, DashboardRepository>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+            builder.Services.AddScoped<ISupplierService, SupplierService>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",

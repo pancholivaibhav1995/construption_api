@@ -4,6 +4,7 @@
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
+   "MinimumProductVersion": "2.6.1186",
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Models",
@@ -24,6 +25,10 @@
       },
       {
          "Name": "[dbo].[Site]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Supplier]",
          "ObjectType": 0
       },
       {

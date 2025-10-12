@@ -19,6 +19,8 @@ public partial class constructiondbContext : DbContext
 
     public virtual DbSet<Site> Sites { get; set; }
 
+    public virtual DbSet<Supplier> Suppliers { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Userrole> Userroles { get; set; }
@@ -30,15 +32,12 @@ public partial class constructiondbContext : DbContext
             entity.ToTable("Organisation");
 
             entity.Property(e => e.OrganisationId)
-                .HasDefaultValueSql("(newid())")
+                .ValueGeneratedNever()
                 .HasColumnName("organisationId");
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("created_date");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValue(false)
-                .HasColumnName("isActive");
+            entity.Property(e => e.IsActive).HasColumnName("isActive");
             entity.Property(e => e.OrganisationName)
                 .IsRequired()
                 .HasMaxLength(255)
@@ -69,11 +68,9 @@ public partial class constructiondbContext : DbContext
             entity.ToTable("Site");
 
             entity.Property(e => e.Siteid)
-                .HasDefaultValueSql("(newid())")
+                .ValueGeneratedNever()
                 .HasColumnName("siteid");
-            entity.Property(e => e.Isactive)
-                .HasDefaultValue(true)
-                .HasColumnName("isactive");
+            entity.Property(e => e.Isactive).HasColumnName("isactive");
             entity.Property(e => e.Location)
                 .HasMaxLength(255)
                 .HasColumnName("location");
@@ -82,8 +79,20 @@ public partial class constructiondbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(150)
                 .HasColumnName("sitename");
-            entity.Property(e => e.Userid)
-                .HasColumnName("userid");
+            entity.Property(e => e.Userid).HasColumnName("userid");
+        });
+
+        modelBuilder.Entity<Supplier>(entity =>
+        {
+            entity.ToTable("Supplier");
+
+            entity.Property(e => e.SupplierId).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SupplierName)
+                .IsRequired()
+                .HasMaxLength(200);
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -91,7 +100,7 @@ public partial class constructiondbContext : DbContext
             entity.ToTable("user");
 
             entity.Property(e => e.Userid)
-                .HasDefaultValueSql("(newid())")
+                .ValueGeneratedNever()
                 .HasColumnName("userid");
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
@@ -101,14 +110,12 @@ public partial class constructiondbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("contactnumber");
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("created_date");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.Firstname).HasMaxLength(100);
             entity.Property(e => e.Isactive).HasColumnName("isactive");
             entity.Property(e => e.Lastname).HasMaxLength(100);
-            entity.Property(e => e.OrganisationId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Password).HasMaxLength(256);
             entity.Property(e => e.UpdatedDate)
                 .HasColumnType("datetime")
@@ -120,12 +127,12 @@ public partial class constructiondbContext : DbContext
 
         modelBuilder.Entity<Userrole>(entity =>
         {
-            entity.HasKey(e => e.Userroleid).HasName("PK__userrole__F07D108AF4391A7F");
+            entity.HasKey(e => e.Userroleid).HasName("PK__userrole__F07D108A458BC3E7");
 
             entity.ToTable("userrole");
 
             entity.Property(e => e.Userroleid)
-                .HasDefaultValueSql("(newid())")
+                .ValueGeneratedNever()
                 .HasColumnName("userroleid");
             entity.Property(e => e.Roleid).HasColumnName("roleid");
         });

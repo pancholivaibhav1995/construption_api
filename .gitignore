@@ -105,3 +105,8 @@ obj/
 /Construction.api/obj/Debug/net8.0/Construction.api.AssemblyInfo.cs
 /Construction.Models/obj/Debug/net8.0/Construction.Models.AssemblyInfo.cs
 /Construction.Repository/obj/Debug/net8.0/Construction.Repository.AssemblyInfo.cs
+/Construction.api/obj/Debug/net8.0/Construction.api.csproj.CoreCompileInputs.cache
+/Construction.Core/obj/Debug/net8.0/Construction.Core.csproj.CoreCompileInputs.cache
+/Construction.Entity/obj/Debug/net8.0/Construction.Entity.csproj.CoreCompileInputs.cache
+/Construction.Models/obj/Debug/net8.0/Construction.Models.csproj.CoreCompileInputs.cache
+/Construction.Repository/obj/Debug/net8.0/Construction.Repository.csproj.CoreCompileInputs.cache
