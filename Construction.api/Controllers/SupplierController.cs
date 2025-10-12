@@ -54,5 +54,31 @@ namespace Construction.api.Controllers
                 return StatusCode(500, "An error occurred while creating supplier");
             }
         }
+
+
+        [HttpPut("UpdateSupplier")]
+        public async Task<IActionResult> UpdateSupplier([FromBody] SupplierRequestModel dto)
+        {
+            if (dto == null || dto.SupplierId == Guid.Empty)
+                return BadRequest("Invalid supplier data");
+
+            try
+            {
+                var updated = await _supplierService.UpdateAsync(dto);
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Internal server error: {ex.Message}" });
+            }
+        }
     }
 }

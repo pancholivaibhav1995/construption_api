@@ -14,4 +14,14 @@ public partial class Supplier
     public Guid OrganisationId { get; set; }
 
     public DateTime? CreatedDate { get; set; }
+
+    public string SupplierContactPerson { get; set; }
+
+    public string PhoneNumber { get; set; }
+
+    public string Email { get; set; }
+
+    public string Address { get; set; }
+
+    public string Notes { get; set; }
 }

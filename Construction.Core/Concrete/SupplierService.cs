@@ -1,6 +1,8 @@
-﻿using Construction.Core.Construct;
+﻿using AutoMapper;
+using Construction.Core.Construct;
 using Construction.Entity.Models;
 using Construction.Models.APIModels.request;
+using Construction.Models.APIModels.response;
 using Construction.Repository.Contract;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,11 @@ namespace Construction.Core.Concrete
     public class SupplierService : ISupplierService
     {
         private readonly ISupplierRepository _repo;
-
-        public SupplierService(ISupplierRepository repo)
+        private readonly IMapper _mapper;
+        public SupplierService(ISupplierRepository repo,IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<SupplierRequestModel>> GetAllAsync(Guid organisationId)
@@ -28,13 +31,18 @@ namespace Construction.Core.Concrete
                 SupplierId = s.SupplierId,
                 SupplierName = s.SupplierName,
                 OrganisationId = s.OrganisationId,
-                CreatedDate = (DateTime)s.CreatedDate
+                CreatedDate = (DateTime)s.CreatedDate,
+                SupplierContactPerson = s.SupplierContactPerson,
+                PhoneNumber = s.PhoneNumber,
+                Email = s.Email,
+                Address = s.Address,
+                Notes = s.Notes
             });
 
             return dtos;
         }
 
-        public async Task<SupplierRequestModel> AddAsync(SupplierRequestModel dto)
+        public async Task<SupplierResponseModel> AddAsync(SupplierRequestModel dto)
         {
             if (string.IsNullOrWhiteSpace(dto.SupplierName))
                 throw new ArgumentException("SupplierName is required", nameof(dto.SupplierName));
@@ -46,24 +54,52 @@ namespace Construction.Core.Concrete
             var exists = await _repo.ExistsAsync(dto.OrganisationId, normalizedName);
             if (exists)
                 throw new ArgumentException("A supplier with the same name already exists for this organisation.");
-
-            var entity = new Supplier
-            {
-                SupplierId = Guid.NewGuid(),
-                SupplierName = dto.SupplierName.Trim(),
-                OrganisationId = dto.OrganisationId,
-                CreatedDate = DateTime.UtcNow
-            };
+            var entity = _mapper.Map<Supplier>(dto);
+            entity.SupplierId = Guid.NewGuid();
+            entity.CreatedDate = DateTime.UtcNow;   
+            //var entity = new Supplier
+            //{
+            //    SupplierId = Guid.NewGuid(),
+            //    SupplierName = dto.SupplierName.Trim(),
+            //    OrganisationId = dto.OrganisationId,
+            //    CreatedDate = DateTime.UtcNow
+            //};
 
             var created = await _repo.AddAsync(entity);
+            var response = _mapper.Map<SupplierResponseModel>(entity);
+            return response;
+        }
 
-            return new SupplierRequestModel
-            {
-                SupplierId = created.SupplierId,
-                SupplierName = created.SupplierName,
-                OrganisationId = created.OrganisationId,
-                CreatedDate = (DateTime)created.CreatedDate
-            };
+        // ✅ EDIT SUPPLIER LOGIC
+        public async Task<SupplierResponseModel> UpdateAsync(SupplierRequestModel dto)
+        {
+            if (dto.SupplierId == Guid.Empty)
+                throw new ArgumentException("SupplierId is required", nameof(dto.SupplierId));
+
+            if (string.IsNullOrWhiteSpace(dto.SupplierName))
+                throw new ArgumentException("SupplierName is required", nameof(dto.SupplierName));
+
+            var existing = await _repo.GetByIdAsync(dto.SupplierId);
+            if (existing == null)
+                throw new KeyNotFoundException("Supplier not found");
+
+            // check for duplicate supplier names under same organisation
+            var duplicate = await _repo.ExistsAsync(dto.OrganisationId, dto.SupplierName);
+            if (duplicate)
+                throw new ArgumentException("A supplier with the same name already exists for this organisation.");
+
+
+            existing.Email = dto.Email;
+            existing.SupplierContactPerson = dto.SupplierContactPerson;
+            existing.SupplierName = dto.SupplierName;
+            existing.PhoneNumber = dto.PhoneNumber;
+            existing.Address = dto.Address;
+            existing.Notes = dto.Notes;
+            existing.CreatedDate = existing.CreatedDate;
+            //existing.SupplierName = dto.SupplierName.Trim();
+            var saveResponse = await _repo.UpdateAsync(existing);
+            var response = _mapper.Map<SupplierResponseModel>(saveResponse);
+            return response;
         }
     }
 }

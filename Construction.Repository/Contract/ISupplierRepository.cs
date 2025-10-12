@@ -13,5 +13,8 @@ namespace Construction.Repository.Contract
         Task<Supplier> AddAsync(Supplier supplier);
 
         Task<bool> ExistsAsync(Guid organisationId, string supplierName);
+
+        Task<Supplier> UpdateAsync(Supplier supplier);
+        Task<Supplier?> GetByIdAsync(Guid supplierId);
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Construction.Models.APIModels.request
+namespace Construction.Models.APIModels.response
 {
-    public class SupplierRequestModel
+    public class SupplierResponseModel
     {
         public Guid SupplierId { get; set; }
         public string SupplierName { get; set; }

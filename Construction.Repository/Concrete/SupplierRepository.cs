@@ -44,5 +44,18 @@ namespace Construction.Repository.Concrete
                     s.OrganisationId == organisationId &&
                     s.SupplierName.ToLower() == normalized);
         }
+
+        public async Task<Supplier> UpdateAsync(Supplier supplier)
+        {
+           // _db.Suppliers.Update(supplier);
+            await _db.SaveChangesAsync();
+            return supplier;
+        }
+
+        public async Task<Supplier?> GetByIdAsync(Guid supplierId)
+        {
+            return await _db.Suppliers.FirstOrDefaultAsync(s => s.SupplierId == supplierId);
+
+        }
     }
 }

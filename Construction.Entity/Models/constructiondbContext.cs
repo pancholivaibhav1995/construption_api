@@ -87,9 +87,14 @@ public partial class constructiondbContext : DbContext
             entity.ToTable("Supplier");
 
             entity.Property(e => e.SupplierId).ValueGeneratedNever();
+            entity.Property(e => e.Address).HasMaxLength(250);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Email).HasMaxLength(150);
+            entity.Property(e => e.Notes).HasMaxLength(500);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+            entity.Property(e => e.SupplierContactPerson).HasMaxLength(150);
             entity.Property(e => e.SupplierName)
                 .IsRequired()
                 .HasMaxLength(200);
