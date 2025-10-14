@@ -67,6 +67,8 @@ namespace Construction.api
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
             builder.Services.AddScoped<ISupplierService, SupplierService>();
+            builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
+            builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",

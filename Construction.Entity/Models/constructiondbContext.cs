@@ -13,6 +13,8 @@ public partial class constructiondbContext : DbContext
     {
     }
 
+    public virtual DbSet<MaterialType> MaterialTypes { get; set; }
+
     public virtual DbSet<Organisation> Organisations { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -27,6 +29,23 @@ public partial class constructiondbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<MaterialType>(entity =>
+        {
+            entity.HasKey(e => e.MaterialTypeId).HasName("PK__Material__1621BBDF56A13322");
+
+            entity.ToTable("MaterialType");
+
+            entity.Property(e => e.MaterialTypeId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DefaultUnit).HasMaxLength(50);
+            entity.Property(e => e.MaterialName)
+                .IsRequired()
+                .HasMaxLength(200);
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+        });
+
         modelBuilder.Entity<Organisation>(entity =>
         {
             entity.ToTable("Organisation");
