@@ -17,9 +17,5 @@ namespace Construction.Repository.Contract
         Task<T> GetAsyncById(Guid id);
         Task<IDbContextTransaction> BeginTransactionAsync(DbContext dbContext);
         Task RollbackTransactionAsync(IDbContextTransaction transaction);
-        Task<bool> ExistsAsync(Guid id, string Name);
-
-        Task<IEnumerable<MaterialType>> GetAllByOrgIdAsync(Guid organisationId);
-        Task<MaterialType> UpdateAsync(MaterialType entity);
     }
 }

@@ -17,6 +17,8 @@ public partial class constructiondbContext : DbContext
 
     public virtual DbSet<Organisation> Organisations { get; set; }
 
+    public virtual DbSet<Receipt> Receipts { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Site> Sites { get; set; }
@@ -64,6 +66,30 @@ public partial class constructiondbContext : DbContext
             entity.Property(e => e.UpdatedDate)
                 .HasColumnType("datetime")
                 .HasColumnName("updated_date");
+        });
+
+        modelBuilder.Entity<Receipt>(entity =>
+        {
+            entity.HasKey(e => e.ReceiptId).HasName("PK__Receipt__CC08C4204E5A854A");
+
+            entity.ToTable("Receipt");
+
+            entity.HasIndex(e => e.MaterialId, "IX_Receipt_MaterialId");
+
+            entity.HasIndex(e => e.OrganisationId, "IX_Receipt_OrganisationId");
+
+            entity.HasIndex(e => e.SiteId, "IX_Receipt_SiteId");
+
+            entity.HasIndex(e => e.SupplierId, "IX_Receipt_SupplierId");
+
+            entity.Property(e => e.ReceiptId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 4)");
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.InvoiceUrl).HasMaxLength(1000);
+            entity.Property(e => e.Notes).HasMaxLength(1000);
+            entity.Property(e => e.PaymentStatus).HasMaxLength(50);
+            entity.Property(e => e.Quantity).HasColumnType("decimal(18, 4)");
+            entity.Property(e => e.Rate).HasColumnType("decimal(18, 4)");
         });
 
         modelBuilder.Entity<Role>(entity =>
