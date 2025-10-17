@@ -67,5 +67,28 @@ namespace Construction.api.Controllers
                 return StatusCode(500, new { message = "Failed to fetch users.", error = ex.Message });
             }
         }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateRequestModel request)
+        {
+            try
+            {
+                var orgIdClaim = User.FindFirst("OrganisationId")?.Value;
+                if (string.IsNullOrEmpty(orgIdClaim) || !Guid.TryParse(orgIdClaim, out var organisationId))
+                    return Unauthorized(new { message = "OrganisationId claim missing or invalid in token." });
+
+                request.Organisationid = organisationId;
+
+                var result = await _roleService.UpdateRoleAsync(request);
+                if (!result.Success)
+                    return BadRequest(new { message = result.ErrorMessage });
+
+                return Ok(result.Data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Unexpected error", details = ex.Message });
+            }
+        }
     }
 }

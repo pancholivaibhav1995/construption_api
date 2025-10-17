@@ -24,11 +24,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Page]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Receipt]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Role]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RolePageMapping]",
          "ObjectType": 0
       },
       {

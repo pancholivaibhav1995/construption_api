@@ -1,4 +1,3 @@
-
 using Construction.Core.Concrete;
 using Construction.Core.Construct;
 using Construction.Core.mapper;
@@ -71,6 +70,15 @@ namespace Construction.api
             builder.Services.AddScoped<IMaterialService, MaterialService>();
             builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
             builder.Services.AddScoped<IReceiptService, ReceiptService>();
+
+            // Register Page repository and service
+            builder.Services.AddScoped<IPageRepository, PageRepository>();
+            builder.Services.AddScoped<IPageService, PageService>();
+
+            // Register RolePageMapping repository and service
+            builder.Services.AddScoped<IRolePageMappingRepository, RolePageMappingRepository>();
+            builder.Services.AddScoped<IRolePageMappingService, RolePageMappingService>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",
@@ -81,6 +89,10 @@ namespace Construction.api
 
            
             var app = builder.Build();
+
+            // UseRouting is required before UseCors/UseAuthentication/UseAuthorization when using endpoint routing
+            app.UseRouting();
+
             app.UseCors("AllowFrontend");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

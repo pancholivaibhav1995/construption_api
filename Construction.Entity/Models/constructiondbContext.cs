@@ -17,9 +17,13 @@ public partial class constructiondbContext : DbContext
 
     public virtual DbSet<Organisation> Organisations { get; set; }
 
+    public virtual DbSet<Page> Pages { get; set; }
+
     public virtual DbSet<Receipt> Receipts { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<RolePageMapping> RolePageMappings { get; set; }
 
     public virtual DbSet<Site> Sites { get; set; }
 
@@ -68,6 +72,21 @@ public partial class constructiondbContext : DbContext
                 .HasColumnName("updated_date");
         });
 
+        modelBuilder.Entity<Page>(entity =>
+        {
+            entity.ToTable("Page");
+
+            // Configure primary key so EF Core can track and insert Page entities
+            entity.HasKey(e => e.PageId);
+            entity.Property(e => e.PageId)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.PageName)
+                .IsRequired()
+                .HasMaxLength(200);
+        });
+
         modelBuilder.Entity<Receipt>(entity =>
         {
             entity.HasKey(e => e.ReceiptId).HasName("PK__Receipt__CC08C4204E5A854A");
@@ -106,6 +125,18 @@ public partial class constructiondbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .HasColumnName("rolename");
+        });
+
+        modelBuilder.Entity<RolePageMapping>(entity =>
+        {
+            entity.ToTable("RolePageMapping");
+
+            // Configure primary key so EF Core can track RolePageMapping entities
+            entity.HasKey(e => e.RolePageMappingId);
+            entity.Property(e => e.RolePageMappingId)
+                .HasDefaultValueSql("(newid())");
+
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
         });
 
         modelBuilder.Entity<Site>(entity =>

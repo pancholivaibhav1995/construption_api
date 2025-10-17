@@ -12,9 +12,9 @@ namespace Construction.Repository.Contract
     public interface IGenericRepository<T> where T : class
     {
         Task<T> AddAsync(T entity);
+        Task<T> GetAsyncById(Guid id);
         IEnumerable<T> GetAll();
         Task<int> CommitAsync();
-        Task<T> GetAsyncById(Guid id);
         Task<IDbContextTransaction> BeginTransactionAsync(DbContext dbContext);
         Task RollbackTransactionAsync(IDbContextTransaction transaction);
     }

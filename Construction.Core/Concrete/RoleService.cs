@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Construction.Core.Concrete
 {
@@ -15,11 +16,13 @@ namespace Construction.Core.Concrete
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public RoleService(IRoleRepository roleRepository, IUserRepository userRepository)
+        public RoleService(IRoleRepository roleRepository, IUserRepository userRepository, IMapper mapper)
         {
             _roleRepository = roleRepository;
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public Task AddAsync(Role role)
@@ -49,18 +52,40 @@ namespace Construction.Core.Concrete
         {
             var roles = await _roleRepository.GetAllAsync(organisationId);
 
-            // Mapping to DTO
-            return roles.Select(role => new RoleResponseModel
-            {
-                Roleid = role.Roleid,
-                Rolename = role.Rolename,
-                Organisationid = role.Organisationid
-            }).ToList();
+            // Use AutoMapper to map to DTO
+            return _mapper.Map<List<RoleResponseModel>>(roles);
         }
 
         public async Task<List<UserManagerResponseModel>> GetAllUsersByOrganisationAsync(Guid organisationId)
         {
             return await _userRepository.GetAllUsersByOrganisationAsync(organisationId);
+        }
+
+        public async Task<ServiceResult<Role>> UpdateRoleAsync(RoleUpdateRequestModel request)
+        {
+            if (request == null)
+                return ServiceResult<Role>.Fail("Invalid request.");
+
+            var existingRole = await _roleRepository.GetAsyncById(request.Roleid);
+            if (existingRole == null)
+                return ServiceResult<Role>.Fail("Role not found.");
+
+            // Ensure role belongs to the organisation from token
+            if (existingRole.Organisationid != request.Organisationid)
+                return ServiceResult<Role>.Fail("Role does not belong to the current organisation.");
+
+            // If Rolename changed, ensure no duplicate in same organisation
+            if (!string.Equals(existingRole.Rolename, request.Rolename, StringComparison.OrdinalIgnoreCase))
+            {
+                var nameExists = await _roleRepository.ExistsByNameAsync(request.Rolename, request.Organisationid);
+                if (nameExists)
+                    return ServiceResult<Role>.Fail("Role with the same name already exists.");
+            }
+
+            existingRole.Rolename = request.Rolename;
+            await _roleRepository.CommitAsync();
+
+            return ServiceResult<Role>.Ok(existingRole);
         }
     }
 }
