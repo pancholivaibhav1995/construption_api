@@ -59,7 +59,8 @@ namespace Construction.Repository.Concrete
                     Firstname = user.Firstname,
                     Lastname = user.Lastname,
                     Userid = user.Userid,
-                    Roleid = userrole.Roleid
+                    Roleid = userrole.Roleid,
+                    Wageperday = user.Wageperday
                 }).ToListAsync();
             return result;
         }

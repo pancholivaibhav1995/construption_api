@@ -79,6 +79,13 @@ namespace Construction.api
             builder.Services.AddScoped<IRolePageMappingRepository, RolePageMappingRepository>();
             builder.Services.AddScoped<IRolePageMappingService, RolePageMappingService>();
 
+            // Register LabourPayment repository and service
+            builder.Services.AddScoped<ILabourPaymentRepository, LabourPaymentRepository>();
+            builder.Services.AddScoped<ILabourPaymentService, LabourPaymentService>();
+
+            // Site repository is already registered earlier; ensure it's present
+            builder.Services.AddScoped<ISiteRepository, SiteRepository>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",

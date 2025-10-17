@@ -13,6 +13,8 @@ public partial class constructiondbContext : DbContext
     {
     }
 
+    public virtual DbSet<LabourPayment> LabourPayments { get; set; }
+
     public virtual DbSet<MaterialType> MaterialTypes { get; set; }
 
     public virtual DbSet<Organisation> Organisations { get; set; }
@@ -35,6 +37,18 @@ public partial class constructiondbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<LabourPayment>(entity =>
+        {
+            entity.HasKey(e => e.LabourPaymentId).HasName("PK__LabourPa__B095AC7AB4FA48E3");
+
+            entity.ToTable("LabourPayment");
+
+            entity.Property(e => e.LabourPaymentId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 4)");
+            entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
+            entity.Property(e => e.Notes).HasMaxLength(1000);
+        });
+
         modelBuilder.Entity<MaterialType>(entity =>
         {
             entity.HasKey(e => e.MaterialTypeId).HasName("PK__Material__1621BBDF56A13322");
@@ -74,12 +88,9 @@ public partial class constructiondbContext : DbContext
 
         modelBuilder.Entity<Page>(entity =>
         {
-            entity.ToTable("Page");
-
-            // Configure primary key so EF Core can track and insert Page entities
-            entity.HasKey(e => e.PageId);
-            entity.Property(e => e.PageId)
-                .HasDefaultValueSql("(newid())");
+            entity
+                .HasNoKey()
+                .ToTable("Page");
 
             entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.PageName)
@@ -129,12 +140,9 @@ public partial class constructiondbContext : DbContext
 
         modelBuilder.Entity<RolePageMapping>(entity =>
         {
-            entity.ToTable("RolePageMapping");
-
-            // Configure primary key so EF Core can track RolePageMapping entities
-            entity.HasKey(e => e.RolePageMappingId);
-            entity.Property(e => e.RolePageMappingId)
-                .HasDefaultValueSql("(newid())");
+            entity
+                .HasNoKey()
+                .ToTable("RolePageMapping");
 
             entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
         });
