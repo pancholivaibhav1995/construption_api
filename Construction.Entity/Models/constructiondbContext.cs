@@ -140,10 +140,9 @@ public partial class constructiondbContext : DbContext
 
         modelBuilder.Entity<RolePageMapping>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("RolePageMapping");
+            entity.ToTable("RolePageMapping");
 
+            entity.Property(e => e.RolePageMappingId).ValueGeneratedNever();
             entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
         });
 
