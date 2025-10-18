@@ -32,7 +32,7 @@ namespace Construction.Core.Concrete
             {
                 var site = _mapper.Map<Site>(request);
                 site.Siteid = Guid.NewGuid();
-                site.Isactive = false;
+                site.Isactive = request.IsActive;
                 await _siteRepository.AddAsync(site);
                 var result = await _siteRepository.CommitAsync();
                 var response = _mapper.Map<SiteResponseModel>(site);

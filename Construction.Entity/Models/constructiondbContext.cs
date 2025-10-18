@@ -130,10 +130,9 @@ public partial class constructiondbContext : DbContext
 
         modelBuilder.Entity<Page>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Page");
+            entity.ToTable("Page");
 
+            entity.Property(e => e.PageId).ValueGeneratedNever();
             entity.Property(e => e.CreatedDate).HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.PageName)
                 .IsRequired()
@@ -216,10 +215,9 @@ public partial class constructiondbContext : DbContext
             entity.Property(e => e.CreateDate).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.ExpenseDescription).HasMaxLength(500);
             entity.Property(e => e.Notes).HasMaxLength(500);
-            // Use varchar to avoid automatic padding (CHAR) which adds trailing spaces
             entity.Property(e => e.TransactionType)
                 .HasMaxLength(10)
-                .HasColumnType("varchar(10)");
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<Supplier>(entity =>
