@@ -25,9 +25,9 @@ namespace Construction.api.Controllers
 
         [HttpGet]
         [Route("GetDashboardDataForDashboard")]
-        public async Task<IActionResult> DashBoardData(Guid organisationId)
+        public async Task<IActionResult> DashBoardData(Guid organisationId, Guid siteid)
         {
-            var result = await _dashboardService.GetDashboardCountsAsync(organisationId);
+            var result = await _dashboardService.GetDashboardCountsAsync(organisationId, siteid);
             return Ok(result);
         }
     }

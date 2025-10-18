@@ -10,6 +10,6 @@ namespace Construction.Core.Construct
     public interface IDashboardService
     {
         Task<DashboardResponseModel> GetDashboardStatsAsync(string Email);
-        Task<DashboardCountsResponseModel> GetDashboardCountsAsync(Guid organisationId);
+        Task<DashboardCountsResponseModel> GetDashboardCountsAsync(Guid organisationId, Guid? siteId = null);
     }
 }

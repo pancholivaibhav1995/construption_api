@@ -34,6 +34,8 @@ namespace Construction.Core.Concrete
             var entity = _mapper.Map<SiteTransaction>(request);
             entity.SiteTransactionId = Guid.NewGuid();
             entity.CreateDate = DateTime.UtcNow;
+            // Trim TransactionType to avoid trailing spaces (DB char column or client input)
+            entity.TransactionType = request.TransactionType?.Trim();
 
             await _repo.AddAsync(entity);
             await _repo.CommitAsync();
@@ -54,7 +56,8 @@ namespace Construction.Core.Concrete
             existing.Notes = request.Notes;
             existing.Amount = request.Amount;
             existing.ExpenseDescription = request.ExpenseDescription;
-            existing.TransactionType = request.TransactionType;
+            // Trim TransactionType to remove trailing/leading whitespace
+            existing.TransactionType = request.TransactionType?.Trim();
             existing.UpdateDate = DateTime.UtcNow;
 
             await _repo.CommitAsync();

@@ -216,9 +216,10 @@ public partial class constructiondbContext : DbContext
             entity.Property(e => e.CreateDate).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.ExpenseDescription).HasMaxLength(500);
             entity.Property(e => e.Notes).HasMaxLength(500);
+            // Use varchar to avoid automatic padding (CHAR) which adds trailing spaces
             entity.Property(e => e.TransactionType)
                 .HasMaxLength(10)
-                .IsFixedLength();
+                .HasColumnType("varchar(10)");
         });
 
         modelBuilder.Entity<Supplier>(entity =>
