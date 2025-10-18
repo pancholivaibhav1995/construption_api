@@ -83,6 +83,18 @@ namespace Construction.api
             builder.Services.AddScoped<ILabourPaymentRepository, LabourPaymentRepository>();
             builder.Services.AddScoped<ILabourPaymentService, LabourPaymentService>();
 
+            // Register EmployeeAttendance repository and service
+            builder.Services.AddScoped<IEmployeeAttendanceRepository, EmployeeAttendanceRepository>();
+            builder.Services.AddScoped<IEmployeeAttendanceService, EmployeeAttendanceService>();
+
+            // Register SiteTransaction repository and service
+            builder.Services.AddScoped<ISiteTransactionRepository, SiteTransactionRepository>();
+            builder.Services.AddScoped<ISiteTransactionService, SiteTransactionService>();
+
+            // Register ExpenseCategory repository and service
+            builder.Services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository>();
+            builder.Services.AddScoped<IExpenseCategoryService, ExpenseCategoryService>();
+
             // Site repository is already registered earlier; ensure it's present
             builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 

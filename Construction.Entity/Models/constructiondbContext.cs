@@ -13,6 +13,10 @@ public partial class constructiondbContext : DbContext
     {
     }
 
+    public virtual DbSet<EmployeeAttendance> EmployeeAttendances { get; set; }
+
+    public virtual DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+
     public virtual DbSet<LabourPayment> LabourPayments { get; set; }
 
     public virtual DbSet<MaterialType> MaterialTypes { get; set; }
@@ -29,6 +33,8 @@ public partial class constructiondbContext : DbContext
 
     public virtual DbSet<Site> Sites { get; set; }
 
+    public virtual DbSet<SiteTransaction> SiteTransactions { get; set; }
+
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -37,6 +43,42 @@ public partial class constructiondbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<EmployeeAttendance>(entity =>
+        {
+            entity.HasKey(e => e.AttendanceId).HasName("PK__Employee__8B69261C732F17EF");
+
+            entity.ToTable("EmployeeAttendance");
+
+            entity.Property(e => e.AttendanceId).ValueGeneratedNever();
+            entity.Property(e => e.AttendanceDate).HasDefaultValueSql("(CONVERT([date],getdate()))");
+            entity.Property(e => e.AttendanceStatus)
+                .IsRequired()
+                .HasMaxLength(20);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EmployeeName)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.OvertimeHrs)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.UpdateAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<ExpenseCategory>(entity =>
+        {
+            entity.ToTable("ExpenseCategory");
+
+            entity.Property(e => e.ExpenseCategoryId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreateDate).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.ExpenseCategoryName)
+                .IsRequired()
+                .HasMaxLength(200);
+        });
+
         modelBuilder.Entity<LabourPayment>(entity =>
         {
             entity.HasKey(e => e.LabourPaymentId).HasName("PK__LabourPa__B095AC7AB4FA48E3");
@@ -163,6 +205,20 @@ public partial class constructiondbContext : DbContext
                 .HasMaxLength(150)
                 .HasColumnName("sitename");
             entity.Property(e => e.Userid).HasColumnName("userid");
+        });
+
+        modelBuilder.Entity<SiteTransaction>(entity =>
+        {
+            entity.ToTable("SiteTransaction");
+
+            entity.Property(e => e.SiteTransactionId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreateDate).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.ExpenseDescription).HasMaxLength(500);
+            entity.Property(e => e.Notes).HasMaxLength(500);
+            entity.Property(e => e.TransactionType)
+                .HasMaxLength(10)
+                .IsFixedLength();
         });
 
         modelBuilder.Entity<Supplier>(entity =>

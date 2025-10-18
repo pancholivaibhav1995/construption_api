@@ -16,6 +16,14 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[EmployeeAttendance]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ExpenseCategory]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[LabourPayment]",
          "ObjectType": 0
       },
@@ -45,6 +53,10 @@
       },
       {
          "Name": "[dbo].[Site]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[SiteTransaction]",
          "ObjectType": 0
       },
       {
