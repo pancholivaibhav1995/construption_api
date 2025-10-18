@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "sites",
+    "home",
+    "employees",
+    "rolemanagement",
+    "generate-receipt",
+    "labour-payments",
+    "attendance",
+    "site-transactions"
+  ]
+}

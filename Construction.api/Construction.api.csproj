@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Construction.Models\Construction.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Config\" />
+  </ItemGroup>
+
 </Project>

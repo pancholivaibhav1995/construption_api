@@ -6,10 +6,12 @@ using Construction.Models.APIModels.response;
 using Construction.Repository.Concrete;
 using Construction.Repository.Contract;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Construction.Core.Concrete
@@ -22,13 +24,19 @@ namespace Construction.Core.Concrete
         protected readonly IMapper _mapper;
         protected readonly IUserRoleRepository _userRoleRepository;
         protected readonly ITransactionService _transactionService;
+        protected readonly IPageRepository _pageRepository;
+        protected readonly IRolePageMappingRepository _rolePageMappingRepository;
+        protected readonly IConfiguration _configuration;
 
         public OrganisationService(IOrganisationRepository repository,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             IMapper mapper,
             IUserRoleRepository userRoleRepository,
-            ITransactionService transactionService)
+            ITransactionService transactionService,
+            IPageRepository pageRepository,
+            IRolePageMappingRepository rolePageMappingRepository,
+            IConfiguration configuration)
         {
             _repository = repository;
             _userRepository = userRepository;
@@ -36,6 +44,9 @@ namespace Construction.Core.Concrete
             _mapper = mapper;
             _userRoleRepository = userRoleRepository;
             _transactionService = transactionService;
+            _pageRepository = pageRepository;
+            _rolePageMappingRepository = rolePageMappingRepository;
+            _configuration = configuration;
         }
 
         public async Task<OrganisationResponseModel> CreateOrganisationAsync(OrganisationRequestModel request)
@@ -95,9 +106,72 @@ namespace Construction.Core.Concrete
                 {
                     Userroleid = Guid.NewGuid(),
                     Roleid = role.Roleid,
-                    UserId  = user.Userid // <-- Make sure this is included
+                    UserId = user.Userid // <-- Make sure this is included
                 };
                 await _userRoleRepository.CreateUserRoleAsync(userRole);
+
+                // 5. Seed default pages for this organisation from Config/PageConfig.json
+                try
+                {
+                    // build config path relative to current directory
+                    var configPath = Path.Combine(Directory.GetCurrentDirectory(), "Config", "PageConfig.json");
+                    List<string> pages = null;
+
+                    if (File.Exists(configPath))
+                    {
+                        var json = await File.ReadAllTextAsync(configPath);
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty("pages", out var pagesElement) && pagesElement.ValueKind == JsonValueKind.Array)
+                        {
+                            pages = pagesElement.EnumerateArray().Where(e => e.ValueKind == JsonValueKind.String).Select(e => e.GetString()?.Trim()).Where(s => !string.IsNullOrWhiteSpace(s)).ToList();
+                        }
+                    }
+
+                    if (pages != null && pages.Count > 0)
+                    {
+                        // get existing pages for org
+                        var existing = await _pageRepository.GetAllByOrganisationAsync(organisation.OrganisationId);
+                        var existingNames = existing.Select(p => p.PageName?.Trim().ToLowerInvariant()).ToHashSet();
+
+                        foreach (var pageName in pages)
+                        {
+                            if (string.IsNullOrWhiteSpace(pageName)) continue;
+                            var normalized = pageName.Trim();
+                            if (existingNames.Contains(normalized.ToLowerInvariant()))
+                                continue; // skip existing
+
+                            var page = new Page
+                            {
+                                PageId = Guid.NewGuid(),
+                                PageName = normalized,
+                                OrganisationId = organisation.OrganisationId,
+                                CreatedDate = DateTime.UtcNow
+                            };
+
+                            await _pageRepository.AddAsync(page);
+
+                            // create mapping to Admin role
+                            var mapping = new RolePageMapping
+                            {
+                                RolePageMappingId = Guid.NewGuid(),
+                                RoleId = role.Roleid,
+                                PageId = page.PageId,
+                                OrganisationId = organisation.OrganisationId,
+                                CreatedDate = DateTime.UtcNow
+                            };
+
+                            await _rolePageMappingRepository.AddAsync(mapping);
+                        }
+
+                        // commit page and mapping inserts
+                        await _pageRepository.CommitAsync();
+                        await _rolePageMappingRepository.CommitAsync();
+                    }
+                }
+                catch
+                {
+                    // ignore seeding errors but continue (organisation created)
+                }
 
                 await _repository.CommitAsync();
                 await transaction.CommitAsync();
