@@ -11,7 +11,8 @@ namespace Construction.api.Controllers
     public class DashboardController : ControllerBase
     {
         protected readonly IDashboardService _dashboardService;
-        public DashboardController(IDashboardService dashboardService) {
+        public DashboardController(IDashboardService dashboardService)
+        {
             _dashboardService = dashboardService;
         }
         [HttpGet]
@@ -19,6 +20,14 @@ namespace Construction.api.Controllers
         public async Task<IActionResult> DashBoardGet(string emailId)
         {
             var result = await _dashboardService.GetDashboardStatsAsync(emailId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetDashboardDataForDashboard")]
+        public async Task<IActionResult> DashBoardData(Guid organisationId)
+        {
+            var result = await _dashboardService.GetDashboardCountsAsync(organisationId);
             return Ok(result);
         }
     }
